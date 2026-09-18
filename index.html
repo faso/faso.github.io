@@ -5,6 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>faso</title>
 <style>
+  @font-face {
+    font-family: 'Cabin Mono';
+    src: url('fonts/CabinMono-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Cabin Mono';
+    src: url('fonts/CabinMono-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-display: swap;
+  }
   /* Kanagawa Wave, dark */
   :root {
     --bg: #1f1f28;         /* sumiInk3 */
@@ -17,7 +29,7 @@
   body {
     background: var(--bg);
     color: var(--ink);
-    font: 17px/1.7 Georgia, 'Times New Roman', serif;
+    font: 16px/1.7 'Cabin Mono', monospace;
     max-width: 640px;
     margin: 0 auto;
     padding: 4rem 1.5rem 3rem;
@@ -56,6 +68,7 @@
   <p class="intro">Hello, my name is Arthur. Here are some things I do/have done:</p>
   <div class="things">
     <p>I run <a href="https://picobble.com">picobble.com</a></p>
+    <p>This website is set in <a href="https://github.com/faso/cabin-mono">Cabin Mono</a>, which I designed</p>
   </div>
   <h2>Contact/Links</h2>
   <div class="links">
