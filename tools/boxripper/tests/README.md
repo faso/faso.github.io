@@ -37,3 +37,7 @@ Helpers in `helpers.ts`. Note: reading a face's texture state uses the face-card
 thumbnail (`faceTexStates`) rather than clicking the card, so assertions observe the actual batch result
 without causing extra editor work. All six faces, including bottom, are covered
 by these helpers. The offline workflow test checks that editing, autosave and GLB export make no HTTP requests after page load. Set `BOXRIPPER_URL` to check a static or public deployment.
+
+The fresh-project helper awaits initialization and database deletion before reloading.
+Responsive assertions wait for the picker ResizeObserver to settle after a viewport
+change; both waits matter when checking the live GitHub Pages build.

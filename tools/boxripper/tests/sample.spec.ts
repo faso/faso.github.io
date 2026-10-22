@@ -41,8 +41,8 @@ test.describe('phone', () => {
     await expect(page.locator('#texture-result')).toBeVisible();
     await page.getByRole('link', { name: 'Preview & export' }).tap();
     await expect(page.locator('#model-heading')).toBeInViewport();
-    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(390);
+    await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth)).toBe(390);
     await page.setViewportSize({ width: 320, height: 740 });
-    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(320);
+    await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth)).toBe(320);
   });
 });

@@ -54,5 +54,6 @@ no image download. Starting a new project makes the sample available again.
 The extraction passed 12 focused static-build checks before publishing. The UI
 pass passed 12 focused checks (workflow, sample and viewer/export), including
 network-disabled editing, sample creation, local save and GLB download. Layouts
-were inspected at 320–1440 px without horizontal overflow. The live deployment
-is verified again after pushing.
+were inspected at 320–1440 px without horizontal overflow. Live GitHub Pages
+verification checked matching HTML, JS, CSS and font bytes, keyboard upload,
+phone taps, local restore/reset, storage failures and network-disabled exports.

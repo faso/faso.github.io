@@ -13,9 +13,14 @@ export const FACE_ORDER = ['front', 'back', 'left', 'right', 'top', 'bottom'] as
 /** Open the app with a clean IndexedDB so each test starts from scratch. */
 export async function gotoFresh(page: Page) {
   await page.goto('/boxripper/');
-  await page.evaluate(() => indexedDB.deleteDatabase('boxripper'));
+  await page.waitForFunction(() => !document.querySelector('main')!.inert);
+  await page.evaluate(() => new Promise<void>((resolve, reject) => {
+    const request = indexedDB.deleteDatabase('boxripper');
+    request.onsuccess = () => resolve();
+    request.onerror = () => reject(request.error);
+  }));
   await page.reload();
-  await page.waitForSelector('#dropzone');
+  await page.waitForFunction(() => !document.querySelector('main')!.inert);
 }
 
 /** A striped photo with a big letter, distinct per hue. Returns a data URL. */
