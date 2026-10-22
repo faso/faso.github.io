@@ -7,7 +7,7 @@ swiftshader). **Not** wired into CI yet — run it by hand.
 cd /home/faso/faso.github.io/tools/boxripper/tests
 npm install                 # first time only
 npx playwright install chromium chromium-headless-shell   # first time only
-npx playwright test workflow.spec.ts duplicate.spec.ts persistence.spec.ts viewer-export.spec.ts
+npx playwright test workflow.spec.ts sample.spec.ts viewer-export.spec.ts
 npx playwright test resolution.spec.ts   # a single file
 ```
 
@@ -30,6 +30,7 @@ The config (`playwright.config.ts`) auto-starts `npm run dev` on port 5180 from
 | `viewer-export` | 3D box renders non-background pixels; export is a valid `.glb` (glTF magic) |
 | `persistence` | photos + faces restore after reload; Reset clears |
 | `workflow` | keyboard upload/corners, invalid images, source-coordinate reset, mobile sizing and editor disposal, crossed-quad protection, pending-save reset, rotated proportions, named exports, blocked storage and browser-only offline export |
+| `sample` | local sample creation without network, copy, autosave/reload, GLB download and phone controls |
 | `loupe` | magnifier is `position: fixed` top-right while dragging a corner |
 
 Helpers in `helpers.ts`. Note: reading a face's texture state uses the face-card

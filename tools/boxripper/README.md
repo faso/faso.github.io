@@ -33,7 +33,7 @@ export, not an editable project backup.
 ```sh
 cd tests
 npm ci
-npx playwright test workflow.spec.ts persistence.spec.ts viewer-export.spec.ts
+npx playwright test workflow.spec.ts sample.spec.ts viewer-export.spec.ts
 ```
 
 The tests start the source dev server. To check the actual static build, serve
@@ -41,3 +41,18 @@ the repository root (for example `python3 -m http.server 5181 --bind 127.0.0.1`)
 and set `BOXRIPPER_URL=http://127.0.0.1:5181`. The same setting accepts
 `https://faso.github.io` for live verification; tests use disposable local browser
 profiles and never write to a server. Run only relevant specs, not the full suite.
+
+## Public workspace UI (2026-10-22)
+
+Uses the main site's Kanagawa colors and bundled Cabin Mono for labels. The
+workspace has a collapsible guide, section links, compact face selectors, a
+sticky desktop model preview and larger phone corner handles. Empty texture
+controls stay hidden until a face is ready. The sample button creates an original
+illustrated cabinet in canvas, with three editable face selections; it requires
+no image download. Starting a new project makes the sample available again.
+
+The extraction passed 12 focused static-build checks before publishing. The UI
+pass passed 12 focused checks (workflow, sample and viewer/export), including
+network-disabled editing, sample creation, local save and GLB download. Layouts
+were inspected at 320–1440 px without horizontal overflow. The live deployment
+is verified again after pushing.

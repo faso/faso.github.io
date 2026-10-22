@@ -19,6 +19,7 @@ import {
 } from './types';
 import { loadSnapshot, saveSnapshot, clearSnapshot, type Snapshot } from './store';
 import { wouldCreateCopyCycle } from './faces';
+import { createExamplePhoto, EXAMPLE_FACES } from './example';
 
 interface Photo {
   id: string;
@@ -54,7 +55,7 @@ let photoSeq = 0;
 
 // --- DOM ---
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
-const dropzone = $<HTMLDivElement>('dropzone');
+const dropzone = $<HTMLButtonElement>('dropzone');
 const fileInput = $<HTMLInputElement>('file-input');
 const photoStrip = $<HTMLDivElement>('photo-strip');
 const faceCards = $<HTMLDivElement>('face-cards');
@@ -319,6 +320,7 @@ function choosePhoto(id: string) {
 }
 
 function renderPhotoStrip() {
+  $('sample-row').hidden = photos.length > 0;
   photoStrip.replaceChildren(...photos.map((p) => photoButton(p, false, () => choosePhoto(p.id))));
   $('photo-count').textContent = `${photos.length} photo${photos.length === 1 ? '' : 's'}`;
 }
@@ -410,7 +412,7 @@ function buildCaptureUi(key: FaceKey) {
     const note = document.createElement('p');
     note.className = 'hint empty-editor';
     note.innerHTML =
-      '<strong>Every box starts with a photo.</strong>Add one above, then drag the four corners around a visible face.';
+      '<strong>A photo becomes a face.</strong>Add your photos or try the sample above. Then drag four corners around a flat side of the box.';
     photoSelect.append(note);
   } else {
     for (const p of photos)
@@ -443,6 +445,7 @@ function mountPicker(key: FaceKey) {
 function drawPreview() {
   if (!activeFace) return;
   const tex = textures[activeFace];
+  $('texture-result').dataset.empty = String(!tex);
   $('texture-size').textContent = tex
     ? `${tex.width} × ${tex.height} px`
     : project.faces[activeFace].copyFrom
@@ -514,6 +517,36 @@ function syncTextureInputs() {
 // --- Wiring ---
 
 function wireUpload() {
+  $('sample-btn').addEventListener('click', async () => {
+    const button = $<HTMLButtonElement>('sample-btn');
+    const epoch = projectEpoch;
+    button.disabled = true;
+    try {
+      const file = await createExamplePhoto();
+      if (epoch !== projectEpoch || photos.length) return;
+      await uploadFiles([file]);
+      if (epoch !== projectEpoch || photos.length !== 1) return;
+      const photo = photos[0];
+      if (photo.name !== file.name) return;
+      for (const [face, points] of Object.entries(EXAMPLE_FACES)) {
+        project.faces[face as FaceKey] = {
+          ...emptyFace(), photoId: photo.id, points: points.map(([x, y]) => [x, y] as Pt),
+        };
+      }
+      project.dims = { w: 0.87, h: 1, d: 0.55 };
+      $<HTMLInputElement>('save-name').value = 'field-box';
+      syncDimInputs();
+      regenerateAll();
+      buildEditor();
+      viewer.resetView(project.dims);
+      autosave();
+      $('upload-status').textContent = 'Sample loaded with three faces. Adjust the corners, copy a face, or try a texture style.';
+    } catch {
+      $('upload-status').textContent = 'Could not open the sample. You can still add your own photos.';
+    } finally {
+      button.disabled = false;
+    }
+  });
   dropzone.addEventListener('click', () => fileInput.click());
   fileInput.addEventListener('change', () => {
     void uploadFiles(Array.from(fileInput.files ?? []));
@@ -620,7 +653,7 @@ function updateModelActions() {
   $<HTMLButtonElement>('export-btn').disabled = !count || modelBusy;
   $<HTMLButtonElement>('reset-btn').disabled = modelBusy;
   $('model-hint').textContent = !count
-    ? 'Your textures will appear here. Add a photo to get started.'
+    ? 'Add a photo or try the sample. Your textures will appear here as you trace each face.'
     : count === 6
       ? 'All six faces are ready. Your box is ready to go.'
       : `${count} of 6 faces textured. Empty faces export as a solid color; the bottom is optional.`;

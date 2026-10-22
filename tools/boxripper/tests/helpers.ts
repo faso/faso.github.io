@@ -181,9 +181,9 @@ export async function viewerLitFraction(page: Page): Promise<number> {
     let lit = 0;
     const tot = c.width * c.height;
     for (let i = 0; i < d.length; i += 4) {
-      const dr = Math.abs(d[i] - 20);
-      const dg = Math.abs(d[i + 1] - 26);
-      const db = Math.abs(d[i + 2] - 23);
+      const dr = Math.abs(d[i] - 23);
+      const dg = Math.abs(d[i + 1] - 25);
+      const db = Math.abs(d[i + 2] - 31);
       if (dr + dg + db > 50) lit++;
     }
     return lit / tot;
