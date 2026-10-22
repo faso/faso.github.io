@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#171c1b" />
+    <meta
+      name="description"
+      content="Turn your photos into low-poly textured 3D boxes. Mark the corners, tune the texture, and export a GLB — right in your browser."
+    />
+    <title>Boxripper · Photo to 3D</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath fill='%23bddb96' d='m32 3 27 15v29L32 62 5 47V18z'/%3E%3Cpath fill='none' stroke='%23171c1b' stroke-width='3' d='m5 18 27 15 27-15M32 33v29M18 11l27 15'/%3E%3C/svg%3E"
+    />
+  </head>
+  <body>
+    <header class="app-header">
+      <a class="brand" href="./" aria-label="Boxripper home"
+        ><svg viewBox="0 0 32 36" aria-hidden="true">
+          <path d="m16 2 14 8v16l-14 8L2 26V10Z M2 10l14 8 14-8M16 18v16" />
+        </svg>
+        <h1>boxripper<span>PHOTO → 3D</span></h1></a
+      >
+      <div class="header-actions">
+        <span id="save-state" class="save-state" role="status">Ready</span>
+        <button id="reset-btn" class="btn btn-quiet">New project</button>
+      </div>
+    </header>
+    <main>
+      <div class="intro">
+        <div>
+          <p class="eyebrow">A LITTLE TOOL FOR WORLD BUILDING</p>
+          <h2>Give your photos another dimension.</h2>
+          <p>Pick a photo. Trace the faces. Make something you can spin.</p>
+        </div>
+        <span class="local-note"><span class="status-dot"></span> Photos stay in your browser</span>
+      </div>
+      <div class="workspace">
+        <div class="workbench">
+          <section class="surface photos-panel" aria-labelledby="photos-heading">
+            <div class="section-heading">
+              <h2 id="photos-heading"><span class="step">01</span> Source photos</h2>
+              <span id="photo-count" class="meta">0 photos</span>
+            </div>
+            <button id="dropzone" type="button">
+              <span class="upload-icon" aria-hidden="true">＋</span
+              ><span
+                ><strong>Add photos of your box</strong
+                ><small>Drop images here or browse files · JPG, PNG, WebP</small></span
+              ><span class="upload-arrow" aria-hidden="true">↗</span>
+            </button>
+            <input type="file" id="file-input" accept="image/*" multiple hidden />
+            <div id="photo-strip" aria-label="Uploaded photos"></div>
+            <p id="upload-status" class="hint" role="status"></p>
+          </section>
+          <section class="surface faces-panel" aria-labelledby="faces-heading">
+            <div class="section-heading">
+              <h2 id="faces-heading"><span class="step">02</span> Build the faces</h2>
+              <span id="face-count" class="meta">0 / 6 textured</span>
+            </div>
+            <p class="hint">Start with the front. Copy a finished face to fill an unseen side.</p>
+            <div id="face-cards" aria-label="Box faces"></div>
+            <div id="editor" class="card">
+              <div class="editor-heading">
+                <h3>
+                  <span id="editor-title">Front</span
+                  ><span class="editor-subtitle">face editor</span>
+                </h3>
+                <button id="clear-face" class="btn btn-small btn-quiet">Clear face</button>
+              </div>
+              <div class="control-row source-row">
+                <label for="copy-source">Texture source</label
+                ><select id="copy-source"></select
+                ><label class="check" id="mirror-row"
+                  ><input type="checkbox" id="mirror-toggle" /> Mirror</label
+                >
+              </div>
+              <div id="capture-ui">
+                <div id="photo-select" aria-label="Choose a source photo"></div>
+                <div id="picker-area"></div>
+                <div id="picker-help" class="picker-help" hidden>
+                  <p class="hint">
+                    Drag TL → TR → BR → BL around one face.<br />Tab to a corner; arrow keys nudge,
+                    Shift moves faster.
+                  </p>
+                  <button id="reset-corners" class="btn btn-small">Reset corners</button>
+                </div>
+              </div>
+              <div id="texture-result" class="texture-result">
+                <div class="preview-wrap">
+                  <canvas
+                    id="face-preview"
+                    class="preview"
+                    aria-label="Rectified face texture"
+                  ></canvas>
+                </div>
+                <div class="texture-result-controls">
+                  <p class="eyebrow">FACE TEXTURE</p>
+                  <span id="texture-size" class="hint">Choose a photo to begin</span>
+                  <div class="control-row" id="rotate-row">
+                    <button
+                      id="rotate-ccw"
+                      class="btn btn-small"
+                      title="Rotate counter-clockwise"
+                      aria-label="Rotate texture counter-clockwise"
+                    >
+                      ↶ 90°</button
+                    ><button
+                      id="rotate-cw"
+                      class="btn btn-small"
+                      title="Rotate clockwise"
+                      aria-label="Rotate texture clockwise"
+                    >
+                      ↷ 90°</button
+                    ><span id="rotate-val" class="param-value">0°</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+        <aside class="model-column surface" aria-labelledby="model-heading">
+          <div class="section-heading">
+            <h2 id="model-heading"><span class="status-dot"></span> Live model</h2>
+            <button id="reset-view" class="btn btn-small btn-quiet">Reset view</button>
+          </div>
+          <div class="viewer-stage">
+            <canvas id="viewer" aria-label="Interactive 3D box preview"></canvas
+            ><span class="viewer-tag">12 TRIANGLES · GLB</span>
+          </div>
+          <div class="viewer-instructions">
+            <span>Drag to orbit · Scroll or pinch to zoom</span><span aria-hidden="true">↔</span>
+          </div>
+          <div class="export-panel">
+            <p id="model-hint" class="hint">
+              Your textures will appear here. Add a photo to get started.
+            </p>
+            <label for="save-name" class="panel-label">Model name</label
+            ><input
+              id="save-name"
+              type="text"
+              placeholder="my-street-box"
+              maxlength="80"
+              autocomplete="off"
+            /><button id="export-btn" class="btn btn-primary" disabled>
+              Download .glb <span aria-hidden="true">↓</span></button>
+            <p class="hint export-note">
+              GLB includes your textures. Photos and projects stay in this browser.
+            </p>
+            <p id="status" role="status"></p>
+          </div>
+        </aside>
+        <div class="settings-grid">
+          <section class="surface" aria-labelledby="texture-heading">
+            <div class="section-heading">
+              <h2 id="texture-heading"><span class="step">03</span> Texture style</h2>
+            </div>
+            <div class="controls">
+              <div class="control-row">
+                <label for="dither-mode">Color</label
+                ><select id="dither-mode">
+                  <option value="palette">Adaptive palette</option>
+                  <option value="bw">Black &amp; white</option>
+                </select>
+              </div>
+              <div class="control-row" id="palette-size-row">
+                <label for="palette-size">Colors</label
+                ><input
+                  type="range"
+                  id="palette-size"
+                  min="2"
+                  max="32"
+                  step="1"
+                  value="16"
+                /><output for="palette-size" id="palette-size-val" class="param-value">16</output>
+              </div>
+              <div class="control-row">
+                <label for="dither-algo">Dither</label
+                ><select id="dither-algo">
+                  <option value="floyd">Floyd–Steinberg</option>
+                  <option value="atkinson">Atkinson</option>
+                  <option value="none">None (flat colors)</option>
+                </select>
+              </div>
+              <div class="control-row">
+                <label for="downscale">Size</label
+                ><input
+                  type="range"
+                  id="downscale"
+                  min="48"
+                  max="512"
+                  step="16"
+                  value="192"
+                /><output for="downscale" id="downscale-val" class="param-value">192px</output>
+              </div>
+              <p class="hint">Applies to every face. Smaller textures give a chunkier look.</p>
+            </div>
+          </section>
+          <section class="surface" aria-labelledby="proportions-heading">
+            <div class="section-heading">
+              <h2 id="proportions-heading"><span class="step">04</span> Proportions</h2>
+            </div>
+            <div class="controls">
+              <div class="control-row">
+                <label for="dim-w">Width</label
+                ><input type="range" id="dim-w" min="0.1" max="3" step="0.01" value="1" /><output
+                  for="dim-w"
+                  id="dim-w-val"
+                  class="param-value"
+                  >1.00</output
+                >
+              </div>
+              <div class="control-row">
+                <label for="dim-h">Height</label
+                ><input type="range" id="dim-h" min="0.1" max="3" step="0.01" value="1" /><output
+                  for="dim-h"
+                  id="dim-h-val"
+                  class="param-value"
+                  >1.00</output
+                >
+              </div>
+              <div class="control-row">
+                <label for="dim-d">Depth</label
+                ><input type="range" id="dim-d" min="0.1" max="3" step="0.01" value="1" /><output
+                  for="dim-d"
+                  id="dim-d-val"
+                  class="param-value"
+                  >1.00</output
+                >
+              </div>
+              <button id="recompute-btn" class="btn">Estimate from faces</button>
+              <p class="hint">
+                Relative dimensions. Estimate uses front and side shapes at height 1.
+              </p>
+            </div>
+          </section>
+        </div>
+      </div>
+      <footer>Found in the street. Made for your world.<span><a href="/">by faso</a></span></footer>
+    </main>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
