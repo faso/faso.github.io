@@ -42,18 +42,17 @@ and set `BOXRIPPER_URL=http://127.0.0.1:5181`. The same setting accepts
 `https://faso.github.io` for live verification; tests use disposable local browser
 profiles and never write to a server. Run only relevant specs, not the full suite.
 
-## Public workspace UI (2026-10-22)
+## Public workspace UI (2026-10-23)
 
-Uses the main site's Kanagawa colors and bundled Cabin Mono for labels. The
-workspace has a collapsible guide, section links, compact face selectors, a
-sticky desktop model preview and larger phone corner handles. Empty texture
-controls stay hidden until a face is ready. The sample button creates an original
-illustrated cabinet in canvas, with three editable face selections; it requires
-no image download. Starting a new project makes the sample available again.
+The public copy follows the original Boxripper's dark green palette, system
+fonts, panel sizing, face thumbnails and quiet green export button. The added
+standalone guide and desktop navigation bar were removed at the user's request;
+keep future visual changes close to the original.
 
-The extraction passed 12 focused static-build checks before publishing. The UI
-pass passed 12 focused checks (workflow, sample and viewer/export), including
-network-disabled editing, sample creation, local save and GLB download. Layouts
-were inspected at 320–1440 px without horizontal overflow. Live GitHub Pages
-verification checked matching HTML, JS, CSS and font bytes, keyboard upload,
-phone taps, local restore/reset, storage failures and network-disabled exports.
+Functional improvements remain: a locally drawn sample with three editable
+faces, larger touch corner handles, a phone preview shortcut, hidden empty
+texture controls, local autosave and browser-only GLB export. The sample is a
+small optional button in the photo panel. The server integration stays absent.
+
+Run the focused sample and viewer/export checks after layout changes. Verify
+phone sizing and the published static assets after pushing.

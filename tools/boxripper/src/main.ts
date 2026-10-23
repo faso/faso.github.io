@@ -412,7 +412,7 @@ function buildCaptureUi(key: FaceKey) {
     const note = document.createElement('p');
     note.className = 'hint empty-editor';
     note.innerHTML =
-      '<strong>A photo becomes a face.</strong>Add your photos or try the sample above. Then drag four corners around a flat side of the box.';
+      '<strong>Every box starts with a photo.</strong>Add one above or try the sample, then drag the four corners around a visible face.';
     photoSelect.append(note);
   } else {
     for (const p of photos)
@@ -540,7 +540,7 @@ function wireUpload() {
       buildEditor();
       viewer.resetView(project.dims);
       autosave();
-      $('upload-status').textContent = 'Sample loaded with three faces. Adjust the corners, copy a face, or try a texture style.';
+      $('upload-status').textContent = 'Sample loaded · 3 editable faces.';
     } catch {
       $('upload-status').textContent = 'Could not open the sample. You can still add your own photos.';
     } finally {
@@ -653,7 +653,7 @@ function updateModelActions() {
   $<HTMLButtonElement>('export-btn').disabled = !count || modelBusy;
   $<HTMLButtonElement>('reset-btn').disabled = modelBusy;
   $('model-hint').textContent = !count
-    ? 'Add a photo or try the sample. Your textures will appear here as you trace each face.'
+    ? 'Your textures will appear here. Add a photo or try the sample.'
     : count === 6
       ? 'All six faces are ready. Your box is ready to go.'
       : `${count} of 6 faces textured. Empty faces export as a solid color; the bottom is optional.`;

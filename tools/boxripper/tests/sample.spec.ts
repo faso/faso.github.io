@@ -29,11 +29,9 @@ test('sample: three editable faces restore and export without network access', a
 test.describe('phone', () => {
   test.use({ hasTouch: true, isMobile: true });
 
-  test('sample: phone taps switch faces and the guide and section links remain usable', async ({ page }) => {
+  test('sample: phone taps switch faces and open the model preview', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await h.gotoFresh(page);
-    await page.locator('.quick-guide summary').tap();
-    await expect(page.locator('.quick-guide ol')).toBeVisible();
     await page.getByRole('button', { name: 'Try a sample box' }).tap();
     await expect(page.locator('#face-count')).toHaveText('3 / 6 textured');
     await page.locator('.face-card').nth(h.FACE_IDX.right).tap();

@@ -22,7 +22,7 @@ export class BoxViewer {
   private lastDimsKey = '';
 
   constructor(private canvas: HTMLCanvasElement) {
-    this.scene.background = new THREE.Color(0x17191f);
+    this.scene.background = new THREE.Color(0x141a17);
     this.camera = new THREE.PerspectiveCamera(45, 1, 0.01, 100);
     this.camera.position.set(2, 1.5, 2.5);
 
@@ -70,7 +70,7 @@ export class BoxViewer {
       if (!canvas) {
         // Unset face (including an unused bottom) — neutral placeholder.
         return new THREE.MeshStandardMaterial({
-          color: 0x76818b,
+          color: 0x62705c,
           roughness: 1,
           metalness: 0,
         });
